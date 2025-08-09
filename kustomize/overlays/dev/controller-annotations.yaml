@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        app.kubernetes.io/log-level: "warn"
+    spec:
+      containers:
+        - name: controller
+          args:
+            - /nginx-ingress-controller
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
+            - --election-id=ingress-controller-leader
+            - --controller-class=k8s.io/ingress-nginx
+            - --ingress-class=nginx
+            - --v=1

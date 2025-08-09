@@ -1,0 +1,92 @@
+# Node Feature Discovery detects hardware features like GPUs.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: node-feature-discovery
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfd-master
+  namespace: node-feature-discovery
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nfd-master
+rules:
+  - apiGroups: [""]
+    resources: [nodes]
+    verbs: [get, list, watch, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nfd-master
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nfd-master
+subjects:
+  - kind: ServiceAccount
+    name: nfd-master
+    namespace: node-feature-discovery
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfd-master
+  namespace: node-feature-discovery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfd-master
+  template:
+    metadata:
+      labels:
+        app: nfd-master
+    spec:
+      serviceAccountName: nfd-master
+      containers:
+        - name: master
+          image: k8s.gcr.io/nfd/node-feature-discovery:v0.15.0 # TODO: bump as needed
+          args:
+            - '--feature-labels=*'
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nfd-worker
+  namespace: node-feature-discovery
+spec:
+  selector:
+    matchLabels:
+      app: nfd-worker
+  template:
+    metadata:
+      labels:
+        app: nfd-worker
+    spec:
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: worker
+          image: k8s.gcr.io/nfd/node-feature-discovery:v0.15.0 # TODO: bump as needed
+          command:
+            - nfd-worker
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+# NFD adds labels like nvidia.com/gpu.present=true which can be used in scheduling.

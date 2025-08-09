@@ -1,0 +1,12 @@
+# Base kustomization aggregating core GPU components.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - ../../manifests/metrics-server.yaml
+  - ../../manifests/ingress-nginx.yaml
+  - ../../manifests/node-feature-discovery.yaml
+  - ../../manifests/nvidia-device-plugin.yaml
+  - ../../manifests/dcgm-exporter.yaml
+commonLabels:
+  app.kubernetes.io/part-of: gpu-baseline
