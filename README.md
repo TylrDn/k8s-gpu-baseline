@@ -11,3 +11,13 @@ Demonstrates day-0/1 cluster enablement for GPU workloads: scheduling, observabi
 make kind-up
 make deploy-baseline
 make smoke
+
+
+Quickstart (GPU cluster)
+
+kubectl apply -f manifests/nvidia-device-plugin.yaml
+kubectl apply -f manifests/node-feature-discovery.yaml
+kubectl apply -f manifests/dcgm-exporter.yaml
+kubectl apply -f manifests/metrics-server.yaml
+kubectl apply -f manifests/ingress-nginx.yaml
+kubectl apply -k kustomize/overlays/prod
