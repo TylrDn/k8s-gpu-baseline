@@ -31,9 +31,9 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
+            # The device plugin needs access to GPU device files which require root
+            # privileges. If non-root execution is desired, ensure the selected user has
+            # appropriate permissions.
           resources:
             requests:
               cpu: 100m
