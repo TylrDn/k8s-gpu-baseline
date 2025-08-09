@@ -6,7 +6,8 @@ help: ## Show this help
 deps: ## Install prerequisite tools
        @BIN_DIR=$${BIN_DIR:-/usr/local/bin}; \
        if [ ! -w "$$BIN_DIR" ]; then \
-               echo "Cannot write to $$BIN_DIR. Set BIN_DIR or run 'sudo make deps'"; \
+               echo "Cannot write to $$BIN_DIR. Set BIN_DIR to a writable directory, or re-run this command with elevated permissions (e.g., 'sudo make deps')."; \
+               echo "Warning: Running 'sudo make deps' may have unintended side effects. Consider running only the necessary installation commands with elevated permissions."; \
                exit 1; \
        fi; \
        command -v kubectl >/dev/null || { echo "Installing kubectl"; curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; chmod +x kubectl; mv kubectl $$BIN_DIR/; }; \

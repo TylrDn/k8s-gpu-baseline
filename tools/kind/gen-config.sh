@@ -11,7 +11,7 @@ if (( START > END )); then
 fi
 
 MAX_RANGE=128
-if (( END - START > MAX_RANGE )); then
+if (( END - START >= MAX_RANGE )); then
   echo "Port range ${START}-${END} exceeds maximum size of ${MAX_RANGE}" >&2
   exit 1
 fi
