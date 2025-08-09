@@ -1,0 +1,39 @@
+# NVIDIA device plugin exposes GPUs to Kubernetes pods.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nvidia-device-plugin
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: nvidia-device-plugin
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: nvidia-device-plugin-ctr
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.14.0 # TODO: bump as needed
+          args: ["--fail-on-init-error=false"]
+          env:
+            - name: MIG_STRATEGY # Enable MIG strategy by setting to 'single' or 'mixed'
+              value: "none"
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+# On clusters without GPUs this DaemonSet will remain Pending.
