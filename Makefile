@@ -4,9 +4,14 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*##"}; {printf "%-20s %s\n", $$1, $$2}'
 
 deps: ## Install prerequisite tools
-	@command -v kubectl >/dev/null || { echo "Installing kubectl"; curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; chmod +x kubectl; mv kubectl /usr/local/bin/; }
-	@command -v kind >/dev/null || { echo "Installing kind"; curl -Lo kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64; chmod +x kind; mv kind /usr/local/bin/; }
-	@command -v kustomize >/dev/null || { echo "Installing kustomize"; curl -Lo kustomize.tar.gz $(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep -Eo 'https://.+linux_amd64.tar.gz'); tar -xzf kustomize.tar.gz; mv kustomize*/kustomize /usr/local/bin/; chmod +x /usr/local/bin/kustomize; rm -rf kustomize* kustomize.tar.gz; }
+       @BIN_DIR=$${BIN_DIR:-/usr/local/bin}; \
+       if [ ! -w "$$BIN_DIR" ]; then \
+               echo "Cannot write to $$BIN_DIR. Set BIN_DIR or run 'sudo make deps'"; \
+               exit 1; \
+       fi; \
+       command -v kubectl >/dev/null || { echo "Installing kubectl"; curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; chmod +x kubectl; mv kubectl $$BIN_DIR/; }; \
+       command -v kind >/dev/null || { echo "Installing kind"; curl -Lo kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64; chmod +x kind; mv kind $$BIN_DIR/; }; \
+       command -v kustomize >/dev/null || { echo "Installing kustomize"; curl -Lo kustomize.tar.gz $(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep -Eo 'https://.+linux_amd64.tar.gz'); tar -xzf kustomize.tar.gz; mv kustomize*/kustomize $$BIN_DIR/; chmod +x $$BIN_DIR/kustomize; rm -rf kustomize* kustomize.tar.gz; }
 
 kind-up: ## Create KIND cluster
 	tools/kind/gen-config.sh | kind create cluster --config -
