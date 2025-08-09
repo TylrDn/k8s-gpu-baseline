@@ -11,7 +11,7 @@ Demonstrates day-0/1 cluster enablement for GPU workloads: scheduling, observabi
 make kind-up
 make deploy-baseline
 make smoke
-
+```
 
 Quickstart (GPU cluster)
 
