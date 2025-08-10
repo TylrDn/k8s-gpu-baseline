@@ -8,4 +8,5 @@ spec:
     spec:
       containers:
         - name: metrics-server
-          args: []
+          args:
+            - --kubelet-insecure-tls

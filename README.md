@@ -26,7 +26,7 @@ NetworkPolicies.
 ### Local KIND
 ```bash
 make kind-up
-kubectl apply -k kustomize/overlays/prod
+kubectl apply -k kustomize/overlays/dev
 make smoke
 ```
 
@@ -42,6 +42,21 @@ kubectl apply -k kustomize/overlays/prod
 | `deploy-baseline` | Install GPU baseline manifests via Kustomize |
 | `smoke` | Run GPU detection job and curl ingress health |
 | `teardown` | Delete cluster/resources |
+
+## Testing
+Ensure the pinned tool versions are installed:
+
+```bash
+kubectl version --client --short | grep v1.30.2
+kubeconform -v # v0.6.4
+```
+
+Run linters and schema checks:
+
+```bash
+pre-commit run --files $(git ls-files '*.yaml' '*.yml' '*.md' 'Makefile')
+kubectl kustomize kustomize/overlays/prod | kubeconform -strict -
+```
 
 ## CI
 GitHub Actions runs `kubeconform` on the Kustomize overlay and linters via
