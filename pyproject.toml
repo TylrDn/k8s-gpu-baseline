@@ -12,6 +12,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "pytest"]
 
+[project.scripts]
+ibmi-ops = "ibmi_ops.cli:cli"
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
