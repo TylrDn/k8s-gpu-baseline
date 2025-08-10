@@ -1,2 +1,7 @@
 resources:
   - ../../manifests/networkpolicies
+  - ../../manifests/nvidia-device-plugin.yaml
+  - ../../manifests/node-feature-discovery.yaml
+  - ../../manifests/dcgm-exporter.yaml
+  - ../../manifests/metrics-server.yaml
+  - ../../manifests/ingress-nginx.yaml
