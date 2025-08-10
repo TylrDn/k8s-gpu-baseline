@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - allow-egress-core/gpu-metrics
-  - allow-egress-core/ingress-nginx
-  - allow-egress-core/node-feature-discovery
-  - allow-egress-core/nvidia-device-plugin
-  - allow-monitoring.yaml
-  - default-deny-all.yaml
