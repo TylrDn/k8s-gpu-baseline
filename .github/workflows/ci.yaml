@@ -5,14 +5,25 @@ on: [push, pull_request]
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      KUBECTL_VERSION: v1.30.2
+      KUBECONFORM_VERSION: v0.6.4
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Install tools
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Install kubectl
         run: |
-          pip install pre-commit kubeconform
+          curl -L -o kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - name: Install kubeconform
+        run: |
+          curl -L -o kubeconform.tar.gz "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          tar -xzf kubeconform.tar.gz
+          sudo install -o root -g root -m 0755 kubeconform /usr/local/bin/kubeconform
       - name: Run pre-commit
         run: pre-commit run --files $(git ls-files '*.yaml' '*.yml' '*.md' 'Makefile')
       - name: kubeconform
