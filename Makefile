@@ -6,12 +6,7 @@ SHELL := /bin/bash
 kind-up: ## Create a local KIND cluster
 >kind create cluster --config tools/kind/cluster.yaml
 
-deploy-baseline: ## Install NVIDIA plugin, NFD, DCGM, metrics, ingress
->kubectl apply -f manifests/nvidia-device-plugin.yaml
->kubectl apply -f manifests/node-feature-discovery.yaml
->kubectl apply -f manifests/dcgm-exporter.yaml
->kubectl apply -f manifests/metrics-server.yaml
->kubectl apply -f manifests/ingress-nginx.yaml
+deploy-baseline: ## Install GPU baseline manifests via Kustomize
 >kubectl apply -k kustomize/overlays/prod
 
 smoke: ## Run a GPU detection job and curl ingress health

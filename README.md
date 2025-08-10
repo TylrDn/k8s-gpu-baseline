@@ -9,7 +9,6 @@ NetworkPolicies.
 ```
   README.md
   Makefile
-  helmfile.yaml
   charts/
   kustomize/
   manifests/
@@ -21,7 +20,6 @@ NetworkPolicies.
 
 ## Prerequisites
 - `kubectl`
-- `helm`
 - `docker`
 - `kind` (for local testing)
 
@@ -34,11 +32,6 @@ make smoke
 
 ## Quickstart (any GPU cluster)
 ```bash
-kubectl apply -f manifests/nvidia-device-plugin.yaml
-kubectl apply -f manifests/node-feature-discovery.yaml
-kubectl apply -f manifests/dcgm-exporter.yaml
-kubectl apply -f manifests/metrics-server.yaml
-kubectl apply -f manifests/ingress-nginx.yaml
 kubectl apply -k kustomize/overlays/prod
 ```
 
@@ -46,7 +39,7 @@ kubectl apply -k kustomize/overlays/prod
 | Target | Description |
 |--------|-------------|
 | `kind-up` | Create a local KIND cluster |
-| `deploy-baseline` | Install NVIDIA plugin, NFD, DCGM, metrics, ingress |
+| `deploy-baseline` | Install GPU baseline manifests via Kustomize |
 | `smoke` | Run GPU detection job and curl ingress health |
 | `teardown` | Delete cluster/resources |
 
