@@ -17,11 +17,11 @@ spec:
       labels:
         k8s-app: metrics-server
     spec:
-      containers:
-        - name: metrics-server
-          image: k8s.gcr.io/metrics-server/metrics-server:v0.6.4
-          args:
-            - --kubelet-insecure-tls # For local/dev use only; removed in prod overlay
+        containers:
+          - name: metrics-server
+            image: k8s.gcr.io/metrics-server/metrics-server:v0.6.4
+            # No insecure flags by default; add --kubelet-insecure-tls only in dev overlays
+            args: []
 ---
 apiVersion: v1
 kind: Service
