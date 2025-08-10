@@ -1,0 +1,20 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install tools
+        run: |
+          pip install pre-commit kubeconform
+      - name: Run pre-commit
+        run: pre-commit run --files $(git ls-files '*.yaml' '*.yml' '*.md' 'Makefile')
+      - name: kubeconform
+        run: |
+          kubectl kustomize kustomize/overlays/prod | kubeconform -strict -

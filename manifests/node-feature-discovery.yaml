@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: node-feature-discovery
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfd-worker
+  namespace: node-feature-discovery
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nfd-worker
+  namespace: node-feature-discovery
+spec:
+  selector:
+    matchLabels:
+      app: nfd-worker
+  template:
+    metadata:
+      labels:
+        app: nfd-worker
+    spec:
+      serviceAccountName: nfd-worker
+      containers:
+        - name: nfd-worker
+          image: k8s.gcr.io/nfd/node-feature-discovery:v0.14.0
