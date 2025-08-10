@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 from pathlib import Path
 from typing import Iterable
 
@@ -29,5 +30,5 @@ def import_csv(path: Path) -> int:
 def export_csv(path: Path, rows: Iterable[Iterable[str]]) -> None:
     """Write rows to a CSV file."""
     with path.open("w", newline="") as fh:
-        for row in rows:
-            fh.write(",".join(row) + "\n")
+        writer = csv.writer(fh)
+        writer.writerows(rows)

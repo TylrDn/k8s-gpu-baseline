@@ -7,6 +7,7 @@ via `--profile` which looks for `.env.<profile>`.
 from __future__ import annotations
 
 import os
+import shlex
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
@@ -31,7 +32,9 @@ def _parse_env_file(path: Path) -> Dict[str, str]:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        data[key.strip()] = value.strip()
+        # Support quoted values per .env conventions
+        parsed = shlex.split(value, posix=True)
+        data[key.strip()] = parsed[0] if parsed else ""
     return data
 
 

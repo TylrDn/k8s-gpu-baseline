@@ -27,7 +27,7 @@ python -m ibmi_ops.cli --help
 `ibmi-ops` exposes several subcommands:
 - `ping` – validate connectivity
 - `run-cmd` – execute a system command
-- `transfer` – move files between local and IFS
+- `transfer` – move files between local system and IFS
 - `import-csv` / `export-csv` – bulk data movement
 - `payroll` – sample pipeline
 

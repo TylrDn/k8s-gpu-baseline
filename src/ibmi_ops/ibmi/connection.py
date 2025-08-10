@@ -20,13 +20,16 @@ class DB2Connection:
     def connect(self) -> None:
         """Establish the database connection."""
         try:
+            params = self.kwargs or {}
             if self.use_jdbc:
                 import jaydebeapi  # type: ignore
-                self.conn = jaydebeapi.connect(self.dsn, [self.user, self.password])
+                self.conn = jaydebeapi.connect(
+                    self.dsn, [self.user, self.password], **params
+                )
             else:
                 import pyodbc  # type: ignore
                 self.conn = pyodbc.connect(
-                    self.dsn, user=self.user, password=self.password
+                    self.dsn, user=self.user, password=self.password, **params
                 )  # type: ignore[arg-type]
         except Exception as exc:  # pragma: no cover - network
             raise RuntimeError("DB2 connection failed") from exc
