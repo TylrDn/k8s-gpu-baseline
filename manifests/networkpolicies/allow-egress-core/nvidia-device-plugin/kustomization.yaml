@@ -1,3 +1,0 @@
-resources:
-  - ../allow-egress-core.yaml
-namespace: nvidia-device-plugin

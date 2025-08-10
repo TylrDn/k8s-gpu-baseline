@@ -1,85 +1,56 @@
-# k8s-gpu-baseline
+# ibmi-ops-suite
 
-Minimal Day-0/1 GPU-ready Kubernetes baseline for demos and interviews. It deploys key NVIDIA components and guardrails so you can stand up a cluster quickly, smoke it locally with KIND (CPU-only), and later expand on a real GPU fleet.
+Automation toolkit for IBM i (AS/400) operations.
 
-## Requirements
+## Overview
+`ibmi-ops-suite` provides Python and Java helpers for interacting with IBM i systems: running commands, transferring data, and orchestrating batch pipelines.
 
-* `kubectl`
-* `docker`
-* `kind`
-* `make`
-* GPU cluster optional
+## Prerequisites
+- IBM i host reachable over TCP/IP
+- Optional connectivity: ODBC/JDBC drivers for DB2, SSH/SFTP access
+- Python 3.11+
 
-## TL;DR
+## Setup
+1. Copy `.env.example` to `.env` and adjust values.
+2. Install dependencies with [uv](https://github.com/astral-sh/uv):
+   ```bash
+   uv sync
+   ```
 
+## Local Run
+Execute the CLI:
 ```bash
-make kind-up
-make deploy-baseline
-make deploy-netpol
-make smoke
+python -m ibmi_ops.cli --help
 ```
 
-## What gets deployed
+## CLI Usage
+`ibmi-ops` exposes several subcommands:
+- `ping` – validate connectivity
+- `run-cmd` – execute a system command
+- `transfer` – move files between local and IFS
+- `import-csv` / `export-csv` – bulk data movement
+- `payroll` – sample pipeline
 
-* **metrics-server** – CPU/memory metrics for HPA and dashboards
-* **ingress-nginx** – community ingress controller with sample `/healthz`
-* **Node Feature Discovery (NFD)** – labels nodes with hardware features (e.g. GPUs)
-* **NVIDIA device plugin** – advertises GPUs to the scheduler
-* **DCGM exporter** – GPU metrics on port 9400 with a Grafana dashboard stub
-* **NetworkPolicies** – default deny with explicit egress for core services
+Each command supports `--profile` for selecting an environment and `--verbose` for extra logs. Destructive actions accept `--dry-run`.
 
-## Kustomize
-
+## Testing
+Run linters and tests:
 ```bash
-make kustomize-dev | kubectl apply -f -
-make kustomize-prod | kubectl apply -f -
+ruff check .
+mypy src
+pytest
 ```
 
-## Observability
-
-Port-forward DCGM exporter and view metrics:
-
-```bash
-kubectl -n gpu-metrics port-forward ds/dcgm-exporter 9400:9400
-curl localhost:9400/metrics
-```
-
-Import `dashboards/dcgm-overview.json` into Grafana for a starter dashboard.
-
-## Ingress smoke
-
-```bash
-kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80
-curl localhost:8080/healthz
-```
-
-Or on KIND, curl the NodePort `http://localhost:30080/healthz`.
-
-## GPU smoke
-
-`scripts/smoke-test.sh` looks for GPU nodes and, if found, runs a CUDA pod that executes `nvidia-smi`. On CPU-only clusters it prints a friendly message and exits.
-
-## Security posture
-
-Namespaces ship with default-deny `NetworkPolicy` objects and explicit allows for DNS, time sync, registry access, and Prometheus scraping. These policies are examples—adjust CIDRs and selectors for your environment.
+## Continuous Integration
+GitHub Actions workflow runs linting, type checks, unit tests, and builds Java helpers.
 
 ## Troubleshooting
+- Verify network connectivity and credentials
+- Use `--verbose` to inspect underlying commands
 
-* **Device plugin Pending** – expected on clusters without GPUs
-* **metrics-server TLS** – the Deployment uses `--kubelet-insecure-tls` for local labs
-* **KIND NodePort access** – ports 30000–30090 are forwarded by the KIND config
-* **CNI conflicts** – ensure your cluster CNI supports `NetworkPolicy`
+## Glossary
+- **CCSID** – Coded Character Set Identifier used by IBM i
+- **IFS** – Integrated File System
 
-## Cleanup
-
-```bash
-make teardown
-```
-
-## License
-
-Apache-2.0. See [LICENSE](LICENSE).
-
-## Contributions
-
-Issues and PRs welcome. This repo is a starting point—tailor it to your needs.
+## Security
+Never commit real credentials. Use `.env` only for local development. Report issues via the repository's issue tracker.
