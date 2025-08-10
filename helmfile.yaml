@@ -1,4 +1,0 @@
-repositories:
-  - name: nvidia
-    url: https://nvidia.github.io/gpu-operator
-releases: []
