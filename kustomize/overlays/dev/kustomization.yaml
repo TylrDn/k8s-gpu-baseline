@@ -1,4 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Development overlay: the baseline plus the one concession local clusters
+# need. KIND and similar clusters serve kubelet metrics with a self-signed
+# certificate, so metrics-server is given --kubelet-insecure-tls here and only
+# here. Do not carry this patch into prod.
 resources:
   - ../../base
-patchesStrategicMerge:
-  - metrics-server-patch.yaml
+
+patches:
+  - path: metrics-server-patch.yaml

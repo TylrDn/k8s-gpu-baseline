@@ -1,2 +1,17 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Production overlay. This is deliberately a pass-through of ../../base: it
+# renders the baseline byte-for-byte, with no patches and no relaxed flags.
+# The overlay exists so that `kubectl apply -k kustomize/overlays/prod` is the
+# documented entry point and so cluster-specific settings (image registry
+# mirrors, node selectors, replica counts) have an obvious place to land
+# without ever touching the shared base.
+#
+# The only difference between the two overlays today is that dev adds
+# --kubelet-insecure-tls to metrics-server. Verify with:
+#   diff <(kubectl kustomize kustomize/overlays/prod) \
+#        <(kubectl kustomize kustomize/overlays/dev)
 resources:
   - ../../base
