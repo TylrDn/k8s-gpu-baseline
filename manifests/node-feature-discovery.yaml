@@ -26,4 +26,4 @@ spec:
       serviceAccountName: nfd-worker
       containers:
         - name: nfd-worker
-          image: k8s.gcr.io/nfd/node-feature-discovery:v0.14.0
+          image: registry.k8s.io/nfd/node-feature-discovery:v0.14.0

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: metrics-server
-          image: k8s.gcr.io/metrics-server/metrics-server:v0.6.4
+          image: registry.k8s.io/metrics-server/metrics-server:v0.6.4
           # No insecure flags by default; add --kubelet-insecure-tls only in
           # dev overlays (see kustomize/overlays/dev/metrics-server-patch.yaml)
           args: []
