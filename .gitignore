@@ -1,28 +1,23 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
+# Local tooling
 .venv/
-.uv/
+__pycache__/
+.pre-commit-cache/
+
+# Kubernetes / local state
+kubeconfig
+*.kubeconfig
+rendered/
+*.local.yaml
+
+# Secrets - never commit these
 .env
 .env.*
-
-# Java / Gradle
-.gradle/
-build/
-*.class
-*.jar
-
-# Windows
-*.bat
-*.cmd
-Thumbs.db
-Desktop.ini
 
 # IDE
 .vscode/
 .idea/
 
-# Misc
+# OS
 .DS_Store
-!/.env.example
+Thumbs.db
+Desktop.ini
