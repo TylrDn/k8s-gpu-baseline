@@ -1,6 +1,7 @@
+---
 name: CI
 
-on: [push, pull_request]
+"on": [push, pull_request]
 
 jobs:
   validate:
@@ -19,10 +20,22 @@ jobs:
       - uses: yannh/kubeconform-action@v1
         with:
           version: ${{ env.KUBECONFORM_VERSION }}
+
       - name: Install pre-commit
         run: pip install pre-commit
+
       - name: Run pre-commit
-        run: pre-commit run --files $(git ls-files '*.yaml' '*.yml' '*.md' 'Makefile')
-      - name: kubeconform
-        run: |
-          kubectl kustomize kustomize/overlays/prod | kubeconform -strict -
+        run: pre-commit run --all-files --show-diff-on-failure
+
+      # Both overlays are validated: prod is what users apply, dev carries the
+      # metrics-server patch and so can break independently.
+      - name: Render and validate the prod overlay
+        run: kubectl kustomize kustomize/overlays/prod | kubeconform -strict -
+
+      - name: Render and validate the dev overlay
+        run: kubectl kustomize kustomize/overlays/dev | kubeconform -strict -
+
+      # shellcheck also runs as part of pre-commit above; this step names it
+      # explicitly so a shell failure is obvious in the job summary.
+      - name: Shellcheck scripts/smoke.sh
+        run: pre-commit run shellcheck --all-files
