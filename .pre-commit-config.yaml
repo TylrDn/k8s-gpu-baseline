@@ -1,3 +1,4 @@
+---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -5,7 +6,16 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        # Manifests under manifests/ contain several documents per file.
+        args: [--allow-multiple-documents]
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.32.0
     hooks:
       - id: yamllint
+        args: [--strict, -c, .yamllint.yaml]
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck

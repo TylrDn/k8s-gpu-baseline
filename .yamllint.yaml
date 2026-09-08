@@ -1,0 +1,14 @@
+---
+# yamllint configuration for the GPU baseline manifests.
+extends: default
+
+rules:
+  # Kubernetes manifests in this repo are concatenated multi-document files;
+  # the leading "---" is optional and inconsistently present upstream.
+  document-start: disable
+  line-length:
+    max: 100
+  # GitHub Actions requires the key `on:`, which yamllint otherwise reports as
+  # a truthy value.
+  truthy:
+    check-keys: false
