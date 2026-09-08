@@ -1,7 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# manifests/ is referenced as a directory (it carries its own
+# kustomization.yaml). Kustomize's load restrictor forbids referencing
+# individual files outside the kustomization root, so the file list lives in
+# manifests/kustomization.yaml.
 resources:
-  - ../../manifests/networkpolicies
-  - ../../manifests/nvidia-device-plugin.yaml
-  - ../../manifests/node-feature-discovery.yaml
-  - ../../manifests/dcgm-exporter.yaml
-  - ../../manifests/metrics-server.yaml
-  - ../../manifests/ingress-nginx.yaml
+  - ../../manifests

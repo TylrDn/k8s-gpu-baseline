@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Every component the cluster needs before a GPU workload can be scheduled and
+# observed. Ordered deny-first, then hardware discovery, then telemetry, then
+# ingress.
+resources:
+  - networkpolicies
+  - nvidia-device-plugin.yaml
+  - node-feature-discovery.yaml
+  - dcgm-exporter.yaml
+  - metrics-server.yaml
+  - ingress-nginx.yaml
